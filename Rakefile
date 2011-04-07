@@ -3,9 +3,6 @@
 require 'rubygems'
 require 'hoe'
 
-Hoe.add_include_dirs("../../RubyInline/dev/lib",
-                     "../../ZenTest/dev/lib")
-
 Hoe.plugin :seattlerb
 Hoe.plugin :inline
 
