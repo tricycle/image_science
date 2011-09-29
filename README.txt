@@ -29,10 +29,14 @@ For more information including build steps, see http://seattlerb.rubyforge.org/
     end
   end
 
-== REQUIREMENTS:
+== HACKING
 
-* FreeImage
-* ImageScience
+To hack on this gem you will need a bunch of dependencies and due to badly
+specified version numbers these will pull in newer versions of other
+dependencies than they are able towork with. To work around this a Gemfile
+is present with a known working set of development dependencies. So to get
+started just `bundle install`. There's also a sample rvm file, `.rvmrc.sample`
+that you can copy to .rvmrc.
 
 == INSTALL:
 
