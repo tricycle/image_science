@@ -8,6 +8,7 @@ GEM
       rake (>= 0.8.7)
       rubyforge (>= 1.0.4)
     json_pure (1.6.1)
+    minitest (1.4.2)
     rake (0.8.7)
     rubyforge (2.0.4)
       json_pure (>= 1.1.7)
@@ -19,4 +20,5 @@ DEPENDENCIES
   RubyInline
   ZenTest (~> 4.1.4)
   hoe (~> 2.3.3)
+  minitest (~> 1.4.2)
   rake (~> 0.8.7)
