@@ -8,18 +8,20 @@ end
 
 require 'rubygems'
 require 'minitest/unit'
-require 'minitest/autorun' if $0 == __FILE__
+require 'minitest/autorun'
 require 'image_science'
 
 class TestImageScience < MiniTest::Unit::TestCase
   def setup
     @path = 'test/pix.png'
     @tmppath = 'test/pix-tmp.png'
+    @tmpjpgpath = 'test/pix-tmp.jpg'
     @h = @w = 50
   end
 
   def teardown
     File.unlink @tmppath if File.exist? @tmppath
+    File.unlink @tmpjpgpath if File.exist? @tmpjpgpath
   end
 
   def test_class_with_image
@@ -37,6 +39,17 @@ class TestImageScience < MiniTest::Unit::TestCase
       assert_equal @h, img.height
       assert_equal @w, img.width
     end
+  end
+
+  def test_save_with_quality
+    ImageScience.with_image @path do |img|
+      assert_kind_of ImageScience, img
+      assert_equal @h, img.height
+      assert_equal @w, img.width
+      assert img.save_with_quality(@tmpjpgpath, ImageScience::JPEG_QUALITYNORMAL)
+    end
+
+    assert File.exists?(@tmpjpgpath)
   end
 
   def test_class_with_image_missing

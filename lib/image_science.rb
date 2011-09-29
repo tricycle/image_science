@@ -13,6 +13,12 @@ require 'inline'
 class ImageScience
   VERSION = '1.2.1'
 
+  JPEG_QUALITYSUPERB  = 0x80    # save with superb quality  (100:1)
+  JPEG_QUALITYGOOD    = 0x0100  # save with good quality    (75:1)
+  JPEG_QUALITYNORMAL  = 0x0200  # save with normal quality  (50:1)
+  JPEG_QUALITYAVERAGE = 0x0400  # save with average quality (25:1)
+  JPEG_QUALITYBAD     = 0x0800  # save with bad quality     (10:1)
+
   ##
   # The top-level image loader opens +path+ and then yields the image.
 
@@ -46,7 +52,16 @@ class ImageScience
   # Saves the image out to +path+. Changing the file extension will
   # convert the file type to the appropriate format.
 
-  def save(path); end
+  def save(path)
+    save_with_quality(path, JPEG_QUALITYSUPERB)
+  end
+
+  ##
+  # Saves the image out to +path+ with quality +quality+. Changing the file
+  # extension will convert the file type to the appropriate format. +quality+
+  # only applies when saving to JPEG format.
+
+  def save_with_quality(path, quality); end
 
   ##
   # Resizes the image to +width+ and +height+ using a cubic-bspline
@@ -266,14 +281,16 @@ class ImageScience
     END
 
     builder.c <<-"END"
-      VALUE save(char * output) {
+      VALUE save_with_quality(char * output, int quality) {
         int flags;
         FIBITMAP *bitmap;
         FREE_IMAGE_FORMAT fif = FreeImage_GetFIFFromFilename(output);
+
+        if (quality == 0) quality = JPEG_QUALITYSUPERB; // Default to superb quality
         if (fif == FIF_UNKNOWN) fif = FIX2INT(rb_iv_get(self, "@file_type"));
         if ((fif != FIF_UNKNOWN) && FreeImage_FIFSupportsWriting(fif)) {
           GET_BITMAP(bitmap);
-          flags = fif == FIF_JPEG ? JPEG_QUALITYSUPERB : 0;
+          flags = fif == FIF_JPEG ? quality : 0;
           BOOL result = 0, unload = 0;
 
           if (fif == FIF_PNG) FreeImage_DestroyICCProfile(bitmap);
