@@ -294,8 +294,10 @@ class ImageScience
           BOOL result = 0, unload = 0;
 
           if (fif == FIF_PNG) FreeImage_DestroyICCProfile(bitmap);
-          if (fif == FIF_JPEG && FreeImage_GetBPP(bitmap) != 24)
-            bitmap = FreeImage_ConvertTo24Bits(bitmap), unload = 1; // sue me
+          if (fif == FIF_JPEG && FreeImage_GetBPP(bitmap) != 24) {
+            bitmap = FreeImage_ConvertTo24Bits(bitmap);
+            unload = 1;
+          }
 
           result = FreeImage_Save(fif, bitmap, output, flags);
 
