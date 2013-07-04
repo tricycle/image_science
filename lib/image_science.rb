@@ -205,12 +205,18 @@ class ImageScience
 
     builder.c_singleton <<-"END"
       VALUE with_image_from_memory(VALUE image_data) {
+        BYTE *image_data_ptr;
+        DWORD image_data_length;
+        FIMEMORY *stream;
+        FIBITMAP *bitmap;
+        VALUE result;
+        int flags;
         FREE_IMAGE_FORMAT fif = FIF_UNKNOWN;
 
         Check_Type(image_data, T_STRING);
-        BYTE *image_data_ptr    = (BYTE*)RSTRING_PTR(image_data);
-        DWORD image_data_length = RSTRING_LEN(image_data);
-        FIMEMORY *stream = FreeImage_OpenMemory(image_data_ptr, image_data_length);
+        image_data_ptr    = (BYTE*)RSTRING_PTR(image_data);
+        image_data_length = RSTRING_LEN(image_data);
+        stream = FreeImage_OpenMemory(image_data_ptr, image_data_length);
 
         if (NULL == stream) {
           rb_raise(rb_eTypeError, "Unable to open image_data");
@@ -221,9 +227,9 @@ class ImageScience
           rb_raise(rb_eTypeError, "Unknown file format");
         }
 
-        FIBITMAP *bitmap = NULL;
-        VALUE result = Qnil;
-        int flags = fif == FIF_JPEG ? JPEG_ACCURATE : 0;
+        bitmap = NULL;
+        result = Qnil;
+        flags = fif == FIF_JPEG ? JPEG_ACCURATE : 0;
         bitmap = FreeImage_LoadFromMemory(fif, stream, flags);
         FreeImage_CloseMemory(stream);
         if (bitmap) {
