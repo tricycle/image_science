@@ -180,7 +180,7 @@ class ImageScience
           flags = fif == FIF_JPEG ? JPEG_ACCURATE : 0;
           if (bitmap = FreeImage_Load(fif, input, flags)) {
             FITAG *tagValue = NULL;
-            FreeImage_GetMetadata(FIMD_EXIF_MAIN, bitmap, "Orientation", &tagValue); 
+            FreeImage_GetMetadata(FIMD_EXIF_MAIN, bitmap, "Orientation", &tagValue);
             switch (tagValue == NULL ? 0 : *((short *) FreeImage_GetTagValue(tagValue))) {
               case 6:
                 bitmap = FreeImage_RotateClassic(bitmap, 270);
@@ -302,6 +302,10 @@ class ImageScience
           if (fif == FIF_PNG) FreeImage_DestroyICCProfile(bitmap);
           if (fif == FIF_JPEG && FreeImage_GetBPP(bitmap) != 24) {
             bitmap = FreeImage_ConvertTo24Bits(bitmap);
+            unload = 1;
+          }
+          if (fif == FIF_GIF && FreeImage_GetBPP(bitmap) != 8) {
+            bitmap = FreeImage_ConvertTo8Bits(bitmap);
             unload = 1;
           }
 
